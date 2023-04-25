@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+body{
+  --slack-color: #3f0f40;
+  overflow: hidden;
+  font-family: Lato;
+}
+
+.app__body{
+  display: flex;
+  height: 100vh;
+}
