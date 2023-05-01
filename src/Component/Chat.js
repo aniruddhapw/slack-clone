@@ -15,23 +15,43 @@ const Chat = ({ user }) => {
 
   const [roomDetails, setRoomDetails] = useState(null);
   const [roomMessages, setRoomMessages] = useState([]);
-  // console.log(user);
-  const getConvo = () => {
+  console.log(user);
+  const getConvo = (user) => {
     axios
-      .get(`/get/conversation?id=${roomId}`)
+      .get(`/get/conversation?id=${roomId}&userId=${user._id}`)
       .then((res) => {
-        setRoomDetails(res.data.channelName);
-        setRoomMessages(res.data.conversation);
+        console.log(res);
+        setRoomDetails(res.data.name);
+        setRoomMessages(res.data.messages);
       })
       .catch((err) => {
         console.log(err);
       });
   };
   useEffect(() => {
-    getConvo();
-    const channel = pusher.subscribe("conversation");
+    getConvo(user);
+    const channel = pusher.subscribe("conversations");
     channel.bind("newMessage", function (data) {
-      getConvo();
+      getConvo(user);
+    });
+    const message = pusher.subscribe(`conversation-${roomId}`);
+    message.bind("newMessage", function (data) {
+      getConvo(user);
+      if (Notification.permission === "granted") {
+        new Notification(`New message from ${data.message.username}`, {
+          body: data.message.message,
+          icon: data.message.userImage,
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification(`New message from ${data.message.username}`, {
+              body: data.message.message,
+              icon: data.message.userImage,
+            });
+          }
+        });
+      }
     });
   }, [roomId]);
 
@@ -54,14 +74,17 @@ const Chat = ({ user }) => {
       </div>
 
       <div className="chat__messages">
-        {roomMessages.map(({ message, timestamp, user, userImage }) => (
-          <Message
-            message={message}
-            timestamp={timestamp}
-            user={user}
-            userImage={userImage}
-          />
-        ))}
+        {roomMessages.map(
+          ({ message, timestamp, username, userImage, conversationId }) => (
+            <Message
+              message={message}
+              timestamp={timestamp}
+              user={username}
+              userImage={userImage}
+              conversationId={conversationId}
+            />
+          )
+        )}
       </div>
 
       <ChatInput channelName={roomDetails} channelId={roomId} user={user} />

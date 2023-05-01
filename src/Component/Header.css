@@ -56,3 +56,18 @@
     cursor: pointer;
     
 }
+@media only screen and (max-width:600px){
+    .header__search>input{
+        min-width: 100px;
+    }
+    .header{
+        width: 100%;
+    }
+    }
+/* .header{
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--slack-color);
+    color: white;
+    padding: 10px;
+} */

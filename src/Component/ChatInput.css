@@ -29,3 +29,11 @@
   border: none;
   background-color: transparent;
 }
+@media only screen and (max-width:600px){
+  .chatInput > form > input{
+    width: 80%;
+  }
+  .chatInput > form > button{
+    display: none;
+  }
+  }

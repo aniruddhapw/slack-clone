@@ -3,9 +3,13 @@ body{
   --slack-color: #3f0f40;
   overflow: hidden;
   font-family: Lato;
+  box-sizing: border-box;
 }
 
 .app__body{
   display: flex;
   height: 100vh;
 }
+/* *{
+  box-sizing: border-box;
+} */

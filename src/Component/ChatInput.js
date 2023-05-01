@@ -15,8 +15,9 @@ function ChatInput({ channelName, channelId, user }) {
       axios.post(`/new/message?id=${channelId}`, {
         message: input,
         timestamp: istTime,
-        user: user.name,
-        userImage: user.picture,
+        username: user.username,
+        userImage: user.userImage,
+        conversationId: channelId,
       });
     }
     setInput("");

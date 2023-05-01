@@ -5,6 +5,7 @@ import Sidebar from "./Component/Sidebar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Chat from "./Component/Chat";
 import Login from "./Component/Login";
+import { UserContext } from "./Component/UserContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -15,7 +16,7 @@ function App() {
   const handleLogin = (user) => {
     setIsAuthenticated(true);
     setUser(user);
-    console.log(user.name);
+    console.log(user);
     localStorage.setItem("isAuthenticated", true);
     localStorage.setItem("user", JSON.stringify(user));
   };
@@ -28,26 +29,28 @@ function App() {
   };
 
   return (
-    <div className="app">
-      {isAuthenticated ? (
-        <Router>
-          <Header onLogout={handleLogout} />
-          <div className="app__body">
-            <Sidebar user={user} />
-            <Switch>
-              <Route path="/room/:roomId">
-                <Chat user={user} />
-              </Route>
-              <Route path="/">
-                <Chat user={user} />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      ) : (
-        <Login onLogin={handleLogin} />
-      )}
-    </div>
+    <UserContext.Provider value={user}>
+      <div className="app">
+        {isAuthenticated ? (
+          <Router>
+            <Header onLogout={handleLogout} />
+            <div className="app__body">
+              <Sidebar user={user} />
+              <Switch>
+                <Route path="/room/:roomId">
+                  <Chat user={user} />
+                </Route>
+                <Route path="/">
+                  <Chat user={user} />
+                </Route>
+              </Switch>
+            </div>
+          </Router>
+        ) : (
+          <Login onLogin={handleLogin} />
+        )}
+      </div>
+    </UserContext.Provider>
   );
 }
 

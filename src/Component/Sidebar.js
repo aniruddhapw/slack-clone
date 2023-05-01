@@ -22,18 +22,30 @@ var pusher = new Pusher("3f7e8cb85cbe0ced0ce2", {
 
 const Sidebar = ({ user }) => {
   const [channels, setChannels] = useState([]);
+  const [userDirect, setDirect] = useState([]);
   const getChannelList = () => {
     axios.get("/get/channelList").then((res) => {
       setChannels(res.data);
-      console.log(res.data[3].name);
+      console.log(res.data);
+    });
+  };
+  const getUserList = () => {
+    axios.get("/get/userList").then((res) => {
+      setDirect(res.data);
+      console.log(res.data);
     });
   };
 
   useEffect(() => {
     getChannelList();
-    const channel = pusher.subscribe("channels");
-    channel.bind("newChannel", function (data) {
+    getUserList();
+    const channel = pusher.subscribe("conversations");
+    channel.bind("newConversation", function (data) {
       getChannelList();
+    });
+    const user = pusher.subscribe("users");
+    channel.bind("newUser", function (data) {
+      getUserList();
     });
   }, []);
   return (
@@ -43,7 +55,7 @@ const Sidebar = ({ user }) => {
           <h2>Capstone project</h2>
           <h3>
             <FiberManualRecordIcon />
-            {user.name}
+            {user.username}
           </h3>
         </div>
         <CreateIcon />
@@ -59,12 +71,22 @@ const Sidebar = ({ user }) => {
 
       <hr />
       <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
-
-      <hr />
       {channels.map((channel) => (
         <SidebarOption title={channel.name} id={channel.id} />
       ))}
       <SidebarOption Icon={AddIcon} addChannelOption title="Add Channel" />
+      <hr />
+
+      {userDirect.map((user) => (
+        <SidebarOption
+          title={user.username}
+          addDirectOption
+          id={user._id}
+          reciver={user._id}
+          user={user._id}
+        />
+      ))}
+      <hr />
     </div>
   );
 };

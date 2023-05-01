@@ -3,14 +3,29 @@ import "./Login.css";
 import Button from "@mui/material/Button";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import axios from "../axios";
 
 const Login = ({ onLogin }) => {
   const responseGoogle = (response) => {
     // console.log(response);
     var decode = jwt_decode(response.credential);
-    // console.log(decode);
-
-    onLogin(decode);
+    console.log(decode);
+    if (decode) {
+      axios
+        .post("/new/user", {
+          username: decode.name,
+          email: decode.email,
+          id: decode.sub,
+          userImage: decode.picture,
+        })
+        .then((res) => {
+          console.log(res.data);
+          onLogin(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const onError = () => {
