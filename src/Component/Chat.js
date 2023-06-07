@@ -6,15 +6,17 @@ import ChatInput from "./ChatInput";
 import axios from "../axios";
 import Message from "./Message";
 import Pusher from "pusher-js";
+import { useSelector } from "react-redux";
 
 const pusher = new Pusher("3f7e8cb85cbe0ced0ce2", {
   cluster: "ap2",
 });
-const Chat = ({ user }) => {
+const Chat = () => {
   const { roomId } = useParams();
 
   const [roomDetails, setRoomDetails] = useState(null);
   const [roomMessages, setRoomMessages] = useState([]);
+  const user = useSelector((state) => state.user.user);
   console.log(user);
   const getConvo = (user) => {
     axios

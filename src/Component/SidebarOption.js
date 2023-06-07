@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import "./SidebarOption.css";
 import { useHistory } from "react-router-dom";
 import axios from "../axios";
-import { UserContext } from "./UserContext";
+// import { UserContext } from "./UserContext";
+import { useSelector } from "react-redux";
 
 const SidebarOption = ({
   Icon,
@@ -13,7 +14,9 @@ const SidebarOption = ({
   user,
   reciver,
 }) => {
-  const sender = useContext(UserContext);
+  // const sender = useContext(UserContext);
+
+  const sender = useSelector((state) => state.user.user);
 
   const history = useHistory();
 

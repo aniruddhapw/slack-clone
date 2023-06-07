@@ -15,12 +15,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "../axios";
 import Pusher from "pusher-js";
+import { useSelector } from "react-redux";
 
 var pusher = new Pusher("3f7e8cb85cbe0ced0ce2", {
   cluster: "ap2",
 });
 
-const Sidebar = ({ user }) => {
+const Sidebar = () => {
+  const user = useSelector((state) => state.user.user);
   const [channels, setChannels] = useState([]);
   const [userDirect, setDirect] = useState([]);
   const getChannelList = () => {
@@ -48,6 +50,13 @@ const Sidebar = ({ user }) => {
       getUserList();
     });
   }, []);
+  // trying redux---------------------------------------------------
+
+  const userRedux = useSelector((state) => state.user.user);
+  console.log(userRedux + "we did it guyssss");
+  console.log(userRedux);
+  //--------------------------------
+
   return (
     <div className="sidebar">
       <div className="sidebar__header">
