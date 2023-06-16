@@ -12,7 +12,7 @@ const Login = ({ onLogin }) => {
     console.log(decode);
     if (decode) {
       axios
-        .post("/new/user", {
+        .post("/users/user", {
           username: decode.name,
           email: decode.email,
           id: decode.sub,

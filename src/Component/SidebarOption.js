@@ -2,6 +2,16 @@ import React, { useContext } from "react";
 import "./SidebarOption.css";
 import { useHistory } from "react-router-dom";
 import axios from "../axios";
+import { useState, useEffect } from "react";
+
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 // import { UserContext } from "./UserContext";
 import { useSelector } from "react-redux";
 
@@ -11,15 +21,42 @@ const SidebarOption = ({
   addChannelOption,
   addDirectOption,
   title,
+  onClick,
   user,
   reciver,
 }) => {
   // const sender = useContext(UserContext);
-
+  const [channelName, setChannelName] = useState("");
   const sender = useSelector((state) => state.user.user);
 
   const history = useHistory();
+  const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    console.log("open:", open);
+  }, [open]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    setOpen(false);
+
+    console.log(reason);
+
+    console.log(open);
+    // const channelName = prompt("Please enter the channel name");
+  };
+  const createChannel = () => {
+    if (channelName) {
+      axios.post("/conversations/channel", {
+        name: channelName,
+      });
+    }
+    setOpen(false);
+    handleClose();
+  };
   const selectChannel = () => {
     if (id) {
       history.push(`/room/${id}`);
@@ -29,17 +66,18 @@ const SidebarOption = ({
     window.location.reload();
   };
   const addChannel = () => {
-    const channelName = prompt("Please enter the channel name");
-    if (channelName) {
-      axios.post("/new/channel", {
-        name: channelName,
-      });
-    }
+    handleClickOpen();
+    // const channelName = prompt("Please enter the channel name");
+    // if (channelName) {
+    //   axios.post("/new/channel", {
+    //     name: channelName,
+    //   });
+    // }
   };
   const addDirect = (sender, reciver) => {
     console.log("addDirect");
     axios
-      .post("/direct/new", {
+      .post("/conversations/direct/new", {
         sender: sender,
         receiver: reciver,
       })
@@ -64,7 +102,7 @@ const SidebarOption = ({
       // onClick={addChannelOption ? addChannel : selectChannel}
       onClick={
         addChannelOption
-          ? addChannel
+          ? onClick
           : addDirectOption
           ? () => addDirect(sender._id, reciver)
           : selectChannel
@@ -78,6 +116,29 @@ const SidebarOption = ({
           <span className="sidebarOption__hash"> # </span> {title}
         </h3>
       )}
+
+      {/* -------------------------------- */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Enter name of channel</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={channelName}
+            onChange={(e) => setChannelName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={createChannel}>Create</Button>
+        </DialogActions>
+      </Dialog>
+      {/* <AddChannelDialog open={open} onClose={handleClose} /> */}
     </div>
   );
 };
