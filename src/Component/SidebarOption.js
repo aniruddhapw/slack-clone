@@ -22,7 +22,7 @@ const SidebarOption = ({
   addDirectOption,
   title,
   onClick,
-  user,
+
   reciver,
 }) => {
   // const sender = useContext(UserContext);
@@ -30,33 +30,7 @@ const SidebarOption = ({
   const sender = useSelector((state) => state.user.user);
 
   const history = useHistory();
-  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    console.log("open:", open);
-  }, [open]);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    setOpen(false);
-
-    console.log(reason);
-
-    console.log(open);
-    // const channelName = prompt("Please enter the channel name");
-  };
-  const createChannel = () => {
-    if (channelName) {
-      axios.post("/conversations/channel", {
-        name: channelName,
-      });
-    }
-    setOpen(false);
-    handleClose();
-  };
   const selectChannel = () => {
     if (id) {
       history.push(`/room/${id}`);
@@ -65,15 +39,7 @@ const SidebarOption = ({
     }
     window.location.reload();
   };
-  const addChannel = () => {
-    handleClickOpen();
-    // const channelName = prompt("Please enter the channel name");
-    // if (channelName) {
-    //   axios.post("/new/channel", {
-    //     name: channelName,
-    //   });
-    // }
-  };
+
   const addDirect = (sender, reciver) => {
     console.log("addDirect");
     axios
@@ -116,29 +82,6 @@ const SidebarOption = ({
           <span className="sidebarOption__hash"> # </span> {title}
         </h3>
       )}
-
-      {/* -------------------------------- */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Enter name of channel</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={channelName}
-            onChange={(e) => setChannelName(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={createChannel}>Create</Button>
-        </DialogActions>
-      </Dialog>
-      {/* <AddChannelDialog open={open} onClose={handleClose} /> */}
     </div>
   );
 };

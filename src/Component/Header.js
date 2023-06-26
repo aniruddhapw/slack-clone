@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 
 const Header = ({ onLogout }) => {
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+
   return (
     <div className="header">
       <div className="header__left">

@@ -22,7 +22,7 @@ function App() {
     setIsAuthenticated(true);
     setUser(user);
     dispatch(setUserData(user));
-    console.log(user);
+
     localStorage.setItem("isAuthenticated", true);
     localStorage.setItem("user", JSON.stringify(user));
   };

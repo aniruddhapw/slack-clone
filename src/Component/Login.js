@@ -9,7 +9,7 @@ const Login = ({ onLogin }) => {
   const responseGoogle = (response) => {
     // console.log(response);
     var decode = jwt_decode(response.credential);
-    console.log(decode);
+
     if (decode) {
       axios
         .post("/users/user", {
@@ -19,7 +19,6 @@ const Login = ({ onLogin }) => {
           userImage: decode.picture,
         })
         .then((res) => {
-          console.log(res.data);
           onLogin(res.data);
         })
         .catch((err) => {

@@ -20,12 +20,11 @@ const Chat = () => {
   const [roomDetails, setRoomDetails] = useState(null);
   const [roomMessages, setRoomMessages] = useState([]);
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+
   const getConvo = (user) => {
     axios
       .get(`/messages/getConvo?id=${roomId}&userId=${user._id}`)
       .then((res) => {
-        console.log(res);
         setRoomDetails(res.data.name);
         setRoomMessages(res.data.messages);
       })

@@ -29,7 +29,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
+import Fab from "@mui/material/Fab";
+import EditIcon from "@mui/icons-material/Edit";
 var pusher = new Pusher("3f7e8cb85cbe0ced0ce2", {
   cluster: "ap2",
 });
@@ -43,13 +44,11 @@ const Sidebar = () => {
   const getChannelList = () => {
     axios.get("/conversations/channelList").then((res) => {
       setChannels(res.data);
-      console.log(res.data);
     });
   };
   const getUserList = () => {
     axios.get("/users/userList").then((res) => {
       setDirect(res.data);
-      console.log(res.data);
     });
   };
 
@@ -106,7 +105,10 @@ const Sidebar = () => {
             </h3>
           </Tooltip>
         </div>
-        <CreateIcon />
+        <Fab color="secondary" aria-label="edit">
+          <EditIcon />
+        </Fab>
+        {/* <CreateIcon /> */}
       </div>
       <SidebarOption Icon={InsertCommentIcon} title="Threads" />
       <SidebarOption Icon={InboxIcon} title="Mentions & reactions" />
@@ -121,7 +123,7 @@ const Sidebar = () => {
       <hr />
       <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
       {channels.map((channel) => (
-        <SidebarOption title={channel.name} id={channel.id} />
+        <SidebarOption title={channel.name} key={channel.id} id={channel.id} />
       ))}
 
       <SidebarOption
