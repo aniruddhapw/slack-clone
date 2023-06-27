@@ -9,17 +9,16 @@ const Login = ({ onLogin }) => {
   const responseGoogle = (response) => {
     // console.log(response);
     var decode = jwt_decode(response.credential);
-    console.log(decode);
+
     if (decode) {
       axios
-        .post("/new/user", {
+        .post("/users/user", {
           username: decode.name,
           email: decode.email,
           id: decode.sub,
           userImage: decode.picture,
         })
         .then((res) => {
-          console.log(res.data);
           onLogin(res.data);
         })
         .catch((err) => {

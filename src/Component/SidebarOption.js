@@ -2,7 +2,18 @@ import React, { useContext } from "react";
 import "./SidebarOption.css";
 import { useHistory } from "react-router-dom";
 import axios from "../axios";
-import { UserContext } from "./UserContext";
+import { useState, useEffect } from "react";
+
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
+// import { UserContext } from "./UserContext";
+import { useSelector } from "react-redux";
 
 const SidebarOption = ({
   Icon,
@@ -10,10 +21,13 @@ const SidebarOption = ({
   addChannelOption,
   addDirectOption,
   title,
-  user,
+  onClick,
+
   reciver,
 }) => {
-  const sender = useContext(UserContext);
+  // const sender = useContext(UserContext);
+  const [channelName, setChannelName] = useState("");
+  const sender = useSelector((state) => state.user.user);
 
   const history = useHistory();
 
@@ -25,18 +39,11 @@ const SidebarOption = ({
     }
     window.location.reload();
   };
-  const addChannel = () => {
-    const channelName = prompt("Please enter the channel name");
-    if (channelName) {
-      axios.post("/new/channel", {
-        name: channelName,
-      });
-    }
-  };
+
   const addDirect = (sender, reciver) => {
     console.log("addDirect");
     axios
-      .post("/direct/new", {
+      .post("/conversations/direct/new", {
         sender: sender,
         receiver: reciver,
       })
@@ -61,7 +68,7 @@ const SidebarOption = ({
       // onClick={addChannelOption ? addChannel : selectChannel}
       onClick={
         addChannelOption
-          ? addChannel
+          ? onClick
           : addDirectOption
           ? () => addDirect(sender._id, reciver)
           : selectChannel

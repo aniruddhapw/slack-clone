@@ -52,6 +52,7 @@
     background-color: white;
     border-radius: 999px;
 }
+
 @media only screen and (max-width:600px){
 .sidebar{
     display: none;
