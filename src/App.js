@@ -36,7 +36,6 @@ function App() {
   };
 
   return (
-    // <UserContext.Provider value={user}>
     <div className="app">
       {isAuthenticated ? (
         <Router>

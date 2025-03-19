@@ -22,7 +22,8 @@ const SidebarOption = ({
   addDirectOption,
   title,
   onClick,
-
+  isOnline,
+  lastSeen,
   reciver,
 }) => {
   // const sender = useContext(UserContext);
@@ -78,9 +79,15 @@ const SidebarOption = ({
       {Icon ? (
         <h3>{title}</h3>
       ) : (
-        <h3 className="sidebarOption__channel">
-          <span className="sidebarOption__hash"> # </span> {title}
-        </h3>
+        <div className="sidebarOption__channel">
+          <span className="sidebarOption__hash">#</span> 
+          <span className="sidebarOption__title" title={title.trim()}>
+            {title.trim()}
+          </span>
+          {isOnline &&
+            <span className="sidebarOption__online"></span>
+          }
+        </div>
       )}
     </div>
   );

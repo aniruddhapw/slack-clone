@@ -49,8 +49,79 @@ const Sidebar = () => {
   const getUserList = () => {
     axios.get("/users/userList").then((res) => {
       setDirect(res.data);
+      console.log(res.data,"data")
     });
   };
+
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  const updateUserStatus = async (userId, isOnline) => {
+    try {
+      await axios.post("/users/updateStatus", {
+        userId,
+        isOnline,
+        lastSeen: !isOnline ? new Date().toISOString() : null, // Send last seen only when offline
+      });
+    } catch (error) {
+      console.error("Error updating user status:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!user?._id) return;
+
+    // Handle browser online/offline events
+    const handleOnline = () => {
+      setIsOnline(true);
+      updateUserStatus(user._id, true);
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      updateUserStatus(user._id, false);
+    };
+
+    // Real-time status updates
+    const statusChannel = pusher.subscribe("user-status");
+    statusChannel.bind("status-update", (data) => {
+      setDirect(prev => 
+        prev.map(u => 
+          u._id === data.userId 
+            ? { ...u, isOnline: data.isOnline, lastSeen: data.lastSeen }
+            : u
+        )
+      );
+      if (data.userId === user._id) {
+        setIsOnline(data.isOnline);
+      }
+    });
+
+    // Heartbeat to maintain online status
+    const heartbeat = setInterval(() => {
+      updateUserStatus(user._id, true);
+    }, 15000); // Every 15 seconds
+
+    // Initial status update
+    updateUserStatus(user._id, true);
+    getUserList();
+    getChannelList();
+
+    // Window events
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("beforeunload", () => updateUserStatus(user._id, false));
+
+    // Cleanup
+    return () => {
+      clearInterval(heartbeat);
+      updateUserStatus(user._id, false);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("beforeunload", () => updateUserStatus(user._id, false));
+      statusChannel.unbind_all();
+      statusChannel.unsubscribe();
+    };
+  }, [user?._id]);
 
   useEffect(() => {
     getChannelList();
@@ -76,6 +147,7 @@ const Sidebar = () => {
 
     handleClose();
   };
+
   const handleClickOpen = () => {
     setOpen(true);
     setChannelName("");
@@ -142,6 +214,8 @@ const Sidebar = () => {
           id={user._id}
           reciver={user._id}
           user={user._id}
+          isOnline={user.isOnline}
+          lastSeen={user.lastSeen}
         />
       ))}
       <hr />

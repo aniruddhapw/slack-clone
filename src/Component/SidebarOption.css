@@ -18,15 +18,31 @@
 
 .sidebarOption__channel{
     padding: 10px 0;
-    
-    
+    display: flex;
+    align-items: center;
+    max-width: 100%;
 }
 
+.sidebarOption__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px; /* Adjust this value based on your sidebar width */
+}
 
 .sidebarOption__hash{
-    padding-left: 10px;
+    padding-right: 10px;
+    flex-shrink: 0;
 }
 
 .sidebarOption > h3{
     font-weight: 500;
+}
+
+.sidebarOption__online{
+    background-color: #008000;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-left: 10px;
 }
